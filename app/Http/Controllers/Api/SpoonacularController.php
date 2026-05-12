@@ -19,16 +19,14 @@ class SpoonacularController extends Controller
 
     public function search(Request $request)
     {
+        $request->validate([
+            'query' => 'required|string|max:255',
+            'offset' => 'nullable|integer|min:0'
+        ]);
+
         try {
             $query = $request->query('query');
             $offset = (int) $request->query('offset', 0);
-
-            if (!$query) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Query parameter is required'
-                ], 400);
-            }
 
             $response = Http::get(
                 $this->baseUrl . '/recipes/complexSearch',
